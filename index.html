@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electronic Waste Idea Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            text-align: center;
+            padding: 40px;
+        }
+        input, button {
+            padding: 12px 20px;
+            font-size: 16px;
+            margin: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 60%;
+        }
+        button {
+            background-color: #754caf;
+            color: white;
+        }
+        #loading {
+            display: none;
+            color: #4c7daf;
+        }
+        #result {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h3 {
+            color: #4caf96;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>♻️ Electronic Waste Idea Generator</h1>
+    <p>Enter materials like: <i>old phone screens + circuit boards</i></p>
+    <input id="materials" type="text" placeholder="Enter materials...">
+    <button onclick="generateIdea()">Generate Idea</button>
+    <div id="loading">Generating idea, please wait...</div>
+
+    <div id="result">
+        <h3>Title:</h3><p id="title"></p>
+        <h3>Functionality:</h3><p id="functionality"></p>
+        <h3>Manufacturing Method:</h3><p id="manufacturing"></p>
+        <h3>Environmental Benefits:</h3><p id="benefits"></p>
+        <h3>Safety Considerations:</h3><p id="safety"></p>
+        <h3>Applicable Users:</h3><p id="users"></p>
+        <h3>Usage Scenarios:</h3><p id="scenarios"></p>
+    </div>
+
+    <script>
+        async function generateIdea() {
+            const materials = document.getElementById('materials').value.trim();
+            if (!materials) {
+                alert("Please enter materials.");
+                return;
+            }
+    
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+    
+            try {
+                const response = await fetch("http://localhost:3000/generate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ materials })
+                });
+    
+                const data = await response.json();
+                document.getElementById('loading').style.display = 'none';
+    
+                if (data.error) {
+                    alert("Failed to generate idea: " + data.error);
+                    return;
+                }
+    
+                document.getElementById('title').textContent = data.title || 'No Title Provided';
+                document.getElementById('functionality').textContent = data.functionality || 'No Functionality Provided';
+                document.getElementById('manufacturing').textContent = data.manufacturing || 'No Method Provided';
+                document.getElementById('benefits').textContent = data.benefits || 'No Benefits Provided';
+                document.getElementById('safety').textContent = data.safety || 'No Safety Info Provided';
+                document.getElementById('users').textContent = data.users || 'No Users Info Provided';
+                document.getElementById('scenarios').textContent = data.scenarios || 'No Scenarios Provided';
+
+                document.getElementById('result').style.display = 'block';
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('loading').style.display = 'none';
+                alert("Error occurred while generating idea.");
+            }
+        }
+    </script>    
+</body>
+</html>
