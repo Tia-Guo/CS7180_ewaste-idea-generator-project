@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const open = require('open').default;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,7 @@ const MODELS = {
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('public'));
 
 // Enhanced field extractor
 function extractField(text, field) {
@@ -87,13 +89,13 @@ async function generateIdea(materials, model = 'claude-3-haiku') {
     } catch (jsonError) {
       console.warn('Failed to parse JSON, attempting text extraction:', jsonError.message);
       return {
-        title: extractField(content, 'title'),
-        functionality: extractField(content, 'functionality'),
-        manufacturing: extractField(content, 'manufacturing'),
-        benefits: extractField(content, 'benefits'),
-        safety: extractField(content, 'safety'),
-        users: extractField(content, 'users'),
-        scenarios: extractField(content, 'scenarios')
+        title: extractField(content, 'Title'),
+        functionality: extractField(content, 'Functionality'),
+        manufacturing: extractField(content, 'Manufacturing Method'),
+        benefits: extractField(content, 'Environmental Benefits'),
+        safety: extractField(content, 'Safety'),
+        users: extractField(content, 'Applicable Users'),
+        scenarios: extractField(content, 'Usage Scenarios')
       };
     }
 
@@ -125,16 +127,32 @@ app.post('/generate', async (req, res) => {
   const safeModel = Object.keys(MODELS).includes(model) ? model : 'claude-3-haiku';
   
   try {
-    const result = await generateIdea(materials.trim(), safeModel);
-    res.status(result.error ? 500 : 200).json(result);
+    const result = await generateIdea(materials, safeModel);
+    const responseData = result.error ? null : {
+      title: result.title,
+      functionality: result.functionality,
+      manufacturing: result.manufacturing,
+      benefits: result.benefits,
+      safety: result.safety,
+      users: result.users,
+      scenarios: result.scenarios
+    };
+    res.status(result.error ? 500 : 200).json({
+      success: !result.error,
+      data: responseData,
+      error: result.error || null
+    });
   } catch (error) {
     res.status(500).json({
-      error: 'Internal server error',
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      success: false,
+      data: null,
+      error: 'Internal server error'
     });
   }
 });
 
+
 app.listen(PORT, () => {
   console.log(`✅ OpenRouter service running at: http://localhost:${PORT}`);
+  open(`http://localhost:${PORT}`);
 });
