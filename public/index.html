@@ -84,13 +84,13 @@
                     return;
                 }
     
-                document.getElementById('title').textContent = data.title || 'No Title Provided';
-                document.getElementById('functionality').textContent = data.functionality || 'No Functionality Provided';
-                document.getElementById('manufacturing').textContent = data.manufacturing || 'No Method Provided';
-                document.getElementById('benefits').textContent = data.benefits || 'No Benefits Provided';
-                document.getElementById('safety').textContent = data.safety || 'No Safety Info Provided';
-                document.getElementById('users').textContent = data.users || 'No Users Info Provided';
-                document.getElementById('scenarios').textContent = data.scenarios || 'No Scenarios Provided';
+                document.getElementById('title').textContent = data.data?.title || 'No Title Provided';
+                document.getElementById('functionality').textContent = data.data?.functionality || 'No Functionality Provided';
+                document.getElementById('manufacturing').textContent = data.data?.manufacturing || 'No Method Provided';
+                document.getElementById('benefits').textContent = data.data?.benefits || 'No Benefits Provided';
+                document.getElementById('safety').textContent = data.data?.safety || 'No Safety Info Provided';
+                document.getElementById('users').textContent = data.data?.users || 'No Users Info Provided';
+                document.getElementById('scenarios').textContent = data.data?.scenarios || 'No Scenarios Provided';
 
                 document.getElementById('result').style.display = 'block';
             } catch (err) {
