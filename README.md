@@ -28,10 +28,12 @@ The project consists of the following main components:
 
 2. **Install dependencies**:
    Backend (Node.js dependencies):
+   ```bash
    npm install
 
-3. **Start the server**:
-   npm start
+4. **Start the server**:   
+   ```bash
+   npm start   
    The server will run at http://localhost:3000.
 
 ## Libraries/Packages Used
