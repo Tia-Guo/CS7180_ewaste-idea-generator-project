@@ -33,7 +33,8 @@ The project consists of the following main components:
 
 4. **Start the server**:   
    ```bash
-   npm start   
+   npm start
+   
    The server will run at http://localhost:3000.
 
 ## Libraries/Packages Used
